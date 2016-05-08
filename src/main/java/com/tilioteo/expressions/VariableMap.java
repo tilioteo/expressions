@@ -17,17 +17,17 @@ public final class VariableMap extends HashMap<String, Variable> {
 		if (variable != null) {
 			return variable.getValue();
 		}
-		
+
 		return null;
 	}
-	
+
 	public void setValue(String name, Object value) {
 		Variable variable = get(name);
 		if (variable != null) {
 			variable.setValue(value);
 		}
 	}
-	
+
 	public void add(Variable variable) {
 		if (variable != null) {
 			variable.incRefCount();
@@ -35,7 +35,7 @@ public final class VariableMap extends HashMap<String, Variable> {
 				super.put(variable.getName(), variable);
 		}
 	}
-	
+
 	public void remove(String name) {
 		super.remove(get(name));
 	}

@@ -11,8 +11,7 @@ import java.util.LinkedList;
  *         This class holds informations about operators with the same level
  */
 @SuppressWarnings("serial")
-class OperatorNodeGroup extends LinkedList<HasOperatorNode> implements
-		HasOperatorNode {
+class OperatorNodeGroup extends LinkedList<HasOperatorNode> implements HasOperatorNode {
 	private int beginPosition;
 	private int endPosition;
 	private int level;
@@ -22,8 +21,7 @@ class OperatorNodeGroup extends LinkedList<HasOperatorNode> implements
 		this(0, 0, 0, null);
 	}
 
-	public OperatorNodeGroup(int beginPosition, int endPosition, int level,
-			OperatorNodeGroup parent) {
+	public OperatorNodeGroup(int beginPosition, int endPosition, int level, OperatorNodeGroup parent) {
 		this.beginPosition = beginPosition;
 		this.endPosition = endPosition;
 		this.level = level;
@@ -117,13 +115,11 @@ class OperatorNodeGroup extends LinkedList<HasOperatorNode> implements
 	public boolean place(OperatorNode operatorNode) {
 		boolean result = false;
 
-		if (operatorNode.getPosition() > beginPosition
-				&& operatorNode.getPosition() < endPosition) {
+		if (operatorNode.getPosition() > beginPosition && operatorNode.getPosition() < endPosition) {
 			for (int i = 0; i < this.size(); ++i) {
 				HasOperatorNode obj = get(i);
 
-				if (this instanceof ClassNodeGroup
-						&& obj instanceof MethodArgumentGroup)
+				if (this instanceof ClassNodeGroup && obj instanceof MethodArgumentGroup)
 					continue;
 
 				if (obj instanceof OperatorNodeGroup) {
@@ -147,8 +143,7 @@ class OperatorNodeGroup extends LinkedList<HasOperatorNode> implements
 						end = ((OperatorNode) obj).getPosition();
 					}
 
-					if (operatorNode.getPosition() > begin
-							&& operatorNode.getPosition() < end) {
+					if (operatorNode.getPosition() > begin && operatorNode.getPosition() < end) {
 						add(i, operatorNode);
 						operatorNode.setGroup(this);
 						result = true;

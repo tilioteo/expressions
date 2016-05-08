@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  */
 public interface HasReference extends Serializable {
-	
+
 	public void setReference(Primitive reference);
-	
+
 }

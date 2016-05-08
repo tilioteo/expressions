@@ -9,49 +9,50 @@ package com.tilioteo.expressions;
  */
 @SuppressWarnings("serial")
 public class BinaryExpression extends UnaryExpression {
-	
+
 	protected Primitive leftSide;
 
 	private void clearLeftSide() {
 		if (leftSide != null) {
 			if (leftSide instanceof Variable) {
-				Variable variable = (Variable)leftSide;
+				Variable variable = (Variable) leftSide;
 				if (variable.decRefCount() == 0) {
 					variables.remove(variable);
 				}
 			}
-			
+
 			leftSide = null;
 		}
 	}
-	
+
 	public BinaryExpression(Expression parent) {
 		super(parent);
 	}
-	
+
 	public Primitive getLeftSide() {
 		return leftSide;
 	}
-	
+
 	public void setLeftSide(Primitive leftSide) {
 		if (this.leftSide != leftSide) {
 			clearLeftSide();
-			
+
 			this.leftSide = leftSide;
-			
+
 			if (this.leftSide != null) {
 				if (this.leftSide instanceof Variable) {
-					variables.add((Variable)this.leftSide);
+					variables.add((Variable) this.leftSide);
 				} else if (this.leftSide instanceof Expression) {
-					Expression expression = (Expression)this.leftSide;
+					Expression expression = (Expression) this.leftSide;
 					if (expression.parent != this) {
-						//throw new Exception("Cannot assign expression with different parent");
+						// throw new Exception("Cannot assign expression with
+						// different parent");
 					}
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void clear() {
 		clearLeftSide();
@@ -67,17 +68,17 @@ public class BinaryExpression extends UnaryExpression {
 				leftSide.setValue(rightValue);
 				return leftSide;
 			} else if (operator.equals(Operator.DECLASS) && rightSide instanceof HasReference) {
-				HasReference right = (HasReference)rightSide;
+				HasReference right = (HasReference) rightSide;
 				right.setReference(leftSide);
 				return rightSide.getValue();
 			} else {
 				Object leftValue = leftSide.getValue();
 				Object rightValue = rightSide.getValue();
-				
+
 				if (leftValue != null && rightValue != null) {
 					if (leftValue instanceof Boolean && rightValue instanceof Boolean) {
-						boolean left = (Boolean)leftValue;
-						boolean right = (Boolean)rightValue;
+						boolean left = (Boolean) leftValue;
+						boolean right = (Boolean) rightValue;
 						switch (operator) {
 						case PLUS:
 						case OR:
@@ -92,13 +93,12 @@ public class BinaryExpression extends UnaryExpression {
 						case XOR:
 							return left ^ right;
 						}
-					}
-					
-					if (leftValue instanceof Integer) {
-						int left = (Integer)leftValue;
-						
-						if (rightValue instanceof Integer) {
-							int right = (Integer)rightValue;
+
+					} else if (leftValue instanceof Byte) {
+						byte left = (Byte) leftValue;
+
+						if (rightValue instanceof Byte) {
+							byte right = (Byte) rightValue;
 							switch (operator) {
 							case MINUS:
 								return left - right;
@@ -127,8 +127,122 @@ public class BinaryExpression extends UnaryExpression {
 							case XOR:
 								return left ^ right;
 							}
+						} else if (rightValue instanceof Short) {
+							short right = (Short) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Integer) {
+							int right = (Integer) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Long) {
+							long right = (Long) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Float) {
+							float right = (Float) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
 						} else if (rightValue instanceof Double) {
-							double right = (Double)rightValue;
+							double right = (Double) rightValue;
 							switch (operator) {
 							case MINUS:
 								return left - right;
@@ -152,14 +266,555 @@ public class BinaryExpression extends UnaryExpression {
 								return left <= right;
 							}
 						}
-					}
-					
-					if (leftValue instanceof Double) {
-						double left = (Double)leftValue;
-						
-						if (rightValue instanceof Double) {
-							double right = (Double)rightValue;
-							
+
+					} else if (leftValue instanceof Short) {
+						short left = (Short) leftValue;
+
+						if (rightValue instanceof Byte) {
+							byte right = (Byte) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Short) {
+							short right = (Short) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Integer) {
+							int right = (Integer) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Long) {
+							long right = (Long) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Float) {
+							float right = (Float) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Double) {
+							double right = (Double) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						}
+
+					} else if (leftValue instanceof Integer) {
+						int left = (Integer) leftValue;
+
+						if (rightValue instanceof Byte) {
+							byte right = (Byte) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Short) {
+							short right = (Short) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Integer) {
+							int right = (Integer) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Long) {
+							long right = (Long) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Float) {
+							float right = (Float) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Double) {
+							double right = (Double) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						}
+
+					} else if (leftValue instanceof Long) {
+						long left = (Long) leftValue;
+
+						if (rightValue instanceof Byte) {
+							byte right = (Byte) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Short) {
+							short right = (Short) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Integer) {
+							int right = (Integer) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Long) {
+							long right = (Long) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							case AND:
+								return left & right;
+							case OR:
+								return left | right;
+							case XOR:
+								return left ^ right;
+							}
+						} else if (rightValue instanceof Float) {
+							float right = (Float) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Double) {
+							double right = (Double) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						}
+
+					} else if (leftValue instanceof Float) {
+						float left = (Float) leftValue;
+
+						if (rightValue instanceof Byte) {
+							byte right = (Byte) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Short) {
+							short right = (Short) rightValue;
 							switch (operator) {
 							case MINUS:
 								return left - right;
@@ -183,7 +838,79 @@ public class BinaryExpression extends UnaryExpression {
 								return left <= right;
 							}
 						} else if (rightValue instanceof Integer) {
-							int right = (Integer)rightValue;
+							int right = (Integer) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Long) {
+							long right = (Long) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Float) {
+							float right = (Float) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Double) {
+							double right = (Double) rightValue;
 							switch (operator) {
 							case MINUS:
 								return left - right;
@@ -207,11 +934,159 @@ public class BinaryExpression extends UnaryExpression {
 								return left <= right;
 							}
 						}
-					}
-					
-					if (leftValue instanceof String && rightValue instanceof String) {
-						String left = (String)leftValue;
-						String right = (String)rightValue;
+
+					} else if (leftValue instanceof Double) {
+						double left = (Double) leftValue;
+
+						if (rightValue instanceof Byte) {
+							byte right = (Byte) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Short) {
+							short right = (Short) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Integer) {
+							int right = (Integer) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Long) {
+							long right = (Long) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Float) {
+							float right = (Float) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						} else if (rightValue instanceof Double) {
+							double right = (Double) rightValue;
+							switch (operator) {
+							case MINUS:
+								return left - right;
+							case PLUS:
+								return left + right;
+							case MULTIPLY:
+								return left * right;
+							case DIVIDE:
+								return left / right;
+							case EQUALS:
+								return left == right;
+							case NOT_EQUALS:
+								return left != right;
+							case GREATER:
+								return left > right;
+							case LESS:
+								return left < right;
+							case GREATER_OR_EQUAL:
+								return left >= right;
+							case LESS_OR_EQUAL:
+								return left <= right;
+							}
+						}
+
+					} else if (leftValue instanceof String && rightValue instanceof String) {
+						String left = (String) leftValue;
+						String right = (String) rightValue;
 						switch (operator) {
 						case PLUS:
 							return left + right;
@@ -236,7 +1111,7 @@ public class BinaryExpression extends UnaryExpression {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

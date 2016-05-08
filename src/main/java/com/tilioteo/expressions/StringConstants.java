@@ -83,7 +83,6 @@ public final class StringConstants {
 	public static final Character CHR_9					=	'9';
 
 	public static final String ERROR_UNEXP_PARENTHESIS_FMT	=	"Unexpected parenthesis at position %d";
-	public static final String ERROR_UNEXP_CHAR_AT_POS_FMT	=	"Unexpected character at position %d";
-	
+	public static final String ERROR_UNEXP_CHAR_AT_POS_FMT = "Unexpected character at position %d";
 
 }

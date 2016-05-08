@@ -13,7 +13,7 @@ public abstract class Expression extends Primitive {
 	protected Expression parent;
 	protected Operator operator;
 	protected VariableMap variables;
-	
+
 	protected Expression(Expression parent) {
 		super();
 		this.parent = parent;
@@ -24,21 +24,21 @@ public abstract class Expression extends Primitive {
 			variables = parent.variables;
 		}
 	}
-	
+
 	protected Expression() {
 		this(null);
 	}
-	
+
 	@Override
 	public void clear() {
 		super.clear();
-		
+
 		operator = null;
 		if (parent == null) {
-			
+
 		}
 	}
-	
+
 	public void setVariableValue(String name, Object value) {
 		Variable variable = variables.get(name);
 		if (variable != null) {
@@ -46,7 +46,11 @@ public abstract class Expression extends Primitive {
 			variable.setType(variable.getType());
 		}
 	}
-	
+
+	public boolean hasVariable(String name) {
+		return variables.containsKey(name);
+	}
+
 	public Object getVariableValue(String name) {
 		Variable variable = variables.get(name);
 		if (variable != null) {
@@ -67,5 +71,5 @@ public abstract class Expression extends Primitive {
 			}
 		}
 	}
-	
+
 }

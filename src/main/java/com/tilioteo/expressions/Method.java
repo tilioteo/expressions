@@ -16,18 +16,18 @@ import com.tilioteo.expressions.ExpressionScope.Scope;
  */
 @SuppressWarnings("serial")
 public class Method extends Primitive implements HasReference {
-	
+
 	private static Logger log = Logger.getLogger(Method.class);
 
 	private Primitive reference;
 	private String name;
 	private Primitive[] arguments;
-	
+
 	public Method(String name, Primitive... arguments) {
 		this.name = name;
 		this.arguments = arguments;
 	}
-	
+
 	@Override
 	public Object getValue() {
 		if (reference != null) {
@@ -43,7 +43,7 @@ public class Method extends Primitive implements HasReference {
 					if (arguments != null) {
 						argTypes = new Class<?>[arguments.length];
 						args = new Object[arguments.length];
-						
+
 						for (int i = 0; i < arguments.length; ++i) {
 							args[i] = arguments[i].getValue();
 							argTypes[i] = getValueType(args[i]);
@@ -52,18 +52,20 @@ public class Method extends Primitive implements HasReference {
 						argTypes = new Class<?>[] {};
 						args = new Object[] {};
 					}
-					
+
 					// TODO: find substitute method for parameter typecast
 					method = getDeclaredMethodDeeply(obj.getClass(), name, argTypes);
 					if (method == null) {
 						method = getDeclaredMethodCast(obj.getClass(), name, argTypes);
 					}
-					
+
 					if (method != null) {
 						if (method.isAnnotationPresent(ExpressionScope.class)) {
 							ExpressionScope scope = method.getAnnotation(ExpressionScope.class);
 							if (classPrivateScope || Scope.PRIVATE.equals(scope.value())) {
-								throw new Exception(String.format("Method '%s' of class '%s' was eliminated from expression evaluation.", method.getName(), obj.getClass().getName()));
+								throw new Exception(String.format(
+										"Method '%s' of class '%s' was eliminated from expression evaluation.",
+										method.getName(), obj.getClass().getName()));
 							}
 						}
 						// prepare arguments, do conversions if needed
@@ -71,19 +73,24 @@ public class Method extends Primitive implements HasReference {
 						for (int i = 0; i < argTypes.length; ++i) {
 							Class<?> type = argTypes[i];
 							Class<?> type2 = argTypes2[i];
-							
-							if (!type2.isAssignableFrom(type)) { // parameters cannot be implicitly casted
-								if  (type2 == String.class) { // try to convert to string
+
+							if (!type2.isAssignableFrom(type)) { // parameters
+																	// cannot be
+																	// implicitly
+																	// casted
+								if (type2 == String.class) { // try to convert
+																// to string
 									if (type == Number.class) {
 										args[i] = args[i].toString();
-									} else  if (type == int.class || type == double.class || type == long.class || type == short.class || type == float.class) {
+									} else if (type == int.class || type == double.class || type == long.class
+											|| type == short.class || type == float.class) {
 										args[i] = "" + args[i];
 									}
 								}
 							}
 
 						}
-						
+
 						Object res = method.invoke(obj, args);
 						return res;
 					}
@@ -92,14 +99,17 @@ public class Method extends Primitive implements HasReference {
 					// TODO: handle exception
 					System.err.println(e.getMessage());
 				}
-			} /*else
-				throw new NullReferenceException(String.format("Object reference for method %s is null", name));*/
+			} /*
+				 * else throw new NullReferenceException(String.format(
+				 * "Object reference for method %s is null", name));
+				 */
 		}
 		return null;
 	}
-	
+
 	private java.lang.reflect.Method getDeclaredMethodDeeply(Class<?> clazz, String name, Class<?>... parameterTypes) {
-		//log.debug(String.format("getDeclaredMethodDeeply: name = %s", name != null ? name : "NULL"));
+		// log.debug(String.format("getDeclaredMethodDeeply: name = %s", name !=
+		// null ? name : "NULL"));
 		do {
 			java.lang.reflect.Method method = null;
 			try {
@@ -107,49 +117,63 @@ public class Method extends Primitive implements HasReference {
 				return method;
 			} catch (Exception e) {
 			}
-			
+
 			clazz = clazz.getSuperclass();
-			
+
 		} while (clazz != null);
 		return null;
 	}
-	
+
 	private java.lang.reflect.Method getDeclaredMethodCast(Class<?> clazz, String name, Class<?>... parameterTypes) {
 		ArrayList<java.lang.reflect.Method> list = new ArrayList<java.lang.reflect.Method>();
-		
+
 		// get all methods with given name and parameter count
 		do {
 			java.lang.reflect.Method[] methods = getDeclaredMethodsByName(clazz, name, parameterTypes.length);
 			for (java.lang.reflect.Method method : methods) {
 				list.add(method);
 			}
-			
+
 			clazz = clazz.getSuperclass();
-			
+
 		} while (clazz != null);
-		
+
 		double[] rank = new double[list.size()];
 		// calculate method usability rank
 		for (int i = 0; i < list.size(); ++i) {
 			rank[i] = 0;
 			java.lang.reflect.Method method = list.get(i);
 			Class<?>[] parameterTypes2 = method.getParameterTypes();
-			
+
 			for (int j = 0; j < parameterTypes.length; ++j) {
 				Class<?> type = parameterTypes[j];
 				Class<?> type2 = parameterTypes2[j];
-				
+
 				if (type == type2) { // identical types are the best
 					rank[i] += 5;
-				} else if (type2.isAssignableFrom(type)) { // parameters are able to cast
+				} else if (type2.isAssignableFrom(type)) { // parameters are
+															// able to cast
 					rank[i] += 3;
-				} else if (type2 == String.class && (type == Number.class || type == int.class || type == double.class || type == long.class || type == short.class || type == float.class)) { // try to convert to string
+				} else if (type2 == String.class && (type == Number.class || type == int.class || type == double.class
+						|| type == long.class || type == short.class || type == float.class)) { // try
+																								// to
+																								// convert
+																								// to
+																								// string
 					rank[i] += 1;
 				} else { // castable primitive types
-					if (((type2 == double.class || type2 == Double.class) && (type == double.class || type == long.class || type == Long.class || type == int.class || type == Integer.class || type == float.class || type == Float.class || type == short.class || type == Short.class || type == byte.class || type == Byte.class)) ||
-							((type2 == long.class || type2 == Long.class) && (type == long.class || type == int.class || type == Integer.class || type == short.class || type == Short.class || type == byte.class || type == Byte.class)) ||
-							((type2 == int.class || type2 == Integer.class) && (type == int.class ||type == short.class || type == Short.class || type == byte.class || type == Byte.class)) ||
-							((type2 == short.class || type2 == Short.class) && (type == short.class || type == byte.class || type == Byte.class))) {
+					if (((type2 == double.class || type2 == Double.class) && (type == double.class || type == long.class
+							|| type == Long.class || type == int.class || type == Integer.class || type == float.class
+							|| type == Float.class || type == short.class || type == Short.class || type == byte.class
+							|| type == Byte.class))
+							|| ((type2 == long.class || type2 == Long.class) && (type == long.class || type == int.class
+									|| type == Integer.class || type == short.class || type == Short.class
+									|| type == byte.class || type == Byte.class))
+							|| ((type2 == int.class || type2 == Integer.class)
+									&& (type == int.class || type == short.class || type == Short.class
+											|| type == byte.class || type == Byte.class))
+							|| ((type2 == short.class || type2 == Short.class)
+									&& (type == short.class || type == byte.class || type == Byte.class))) {
 						rank[i] += 3;
 					} else if (type2 == Object.class) {
 						rank[i] += 0.5;
@@ -159,8 +183,8 @@ public class Method extends Primitive implements HasReference {
 					}
 				}
 			}
-			rank[i] = rank[i]/parameterTypes.length;
-			
+			rank[i] = rank[i] / parameterTypes.length;
+
 		}
 		// find index of max rank
 		int maxIndex = -1;
@@ -174,28 +198,29 @@ public class Method extends Primitive implements HasReference {
 				maxIndex = i;
 			}
 		}
-		
+
 		if (maxIndex >= 0 && rank[maxIndex] > 0) {
 			return list.get(maxIndex);
 		}
 
 		return null;
 	}
-	
+
 	private java.lang.reflect.Method[] getDeclaredMethodsByName(Class<?> clazz, String name, int parameterCount) {
 		ArrayList<java.lang.reflect.Method> list = new ArrayList<java.lang.reflect.Method>();
 		java.lang.reflect.Method[] methods = clazz.getDeclaredMethods();
-		
+
 		for (java.lang.reflect.Method method : methods) {
 			int modifiers = method.getModifiers();
-			if (!Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers) && method.getName().equals(name) && method.getParameterTypes().length == parameterCount) {
+			if (!Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers) && method.getName().equals(name)
+					&& method.getParameterTypes().length == parameterCount) {
 				list.add(method);
 			}
 		}
 		return list.toArray(new java.lang.reflect.Method[] {});
 	}
-	
-	private	Class<?> getValueType(Object value) {
+
+	private Class<?> getValueType(Object value) {
 		if (value == null)
 			return Object.class;
 		else if (value instanceof Integer || value.getClass() == int.class)
@@ -210,11 +235,10 @@ public class Method extends Primitive implements HasReference {
 			return value.getClass();
 	}
 
-	
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setReference(Primitive reference) {
 		this.reference = reference;
 	}

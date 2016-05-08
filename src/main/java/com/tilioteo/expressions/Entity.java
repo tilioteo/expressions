@@ -9,9 +9,9 @@ package com.tilioteo.expressions;
  */
 @SuppressWarnings("serial")
 public class Entity extends Variable {
-	
+
 	public Entity(String name, Class<?> type) {
 		super(name, type);
 	}
-	
+
 }

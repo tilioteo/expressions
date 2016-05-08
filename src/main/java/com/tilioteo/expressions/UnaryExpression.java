@@ -9,49 +9,50 @@ package com.tilioteo.expressions;
  */
 @SuppressWarnings("serial")
 public class UnaryExpression extends Expression {
-	
+
 	protected Primitive rightSide;
-	
+
 	private void clearRightSide() {
 		if (rightSide != null) {
 			if (rightSide instanceof Variable) {
-				Variable variable = (Variable)rightSide;
+				Variable variable = (Variable) rightSide;
 				if (variable.decRefCount() == 0) {
 					variables.remove(variable);
 				}
 			}
-			
+
 			rightSide = null;
 		}
 	}
-	
+
 	public UnaryExpression(Expression parent) {
 		super(parent);
 	}
-	
+
 	public Primitive getRightSide() {
 		return rightSide;
 	}
-	
+
 	public void setRightSide(Primitive rightSide) {
 		if (this.rightSide != rightSide) {
 			clearRightSide();
-			
+
 			this.rightSide = rightSide;
-			
+
 			if (this.rightSide != null) {
 				if (this.rightSide instanceof Variable) {
-					variables.add((Variable)this.rightSide);
+					variables.add((Variable) this.rightSide);
 				} else if (this.rightSide instanceof Expression) {
-					Expression expression = (Expression)this.rightSide;
+					Expression expression = (Expression) this.rightSide;
 					if (expression.parent != this) {
-						//throw new Exception("Cannot assign expression with different parent");
+						// throw new Exception("Cannot assign expression with
+						// different parent");
 					}
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void clear() {
 		clearRightSide();
@@ -66,13 +67,25 @@ public class UnaryExpression extends Expression {
 				// apply unary operators
 				switch (operator) {
 				case NOT:
+					if (rightValue instanceof Boolean) {
+						return !(Boolean) rightValue;
+					}
+					break;
 				case MINUS:
 					if (rightValue instanceof Boolean)
-						return !(Boolean)rightValue;
-					else if (rightValue instanceof Double) {
-						return -(Double)rightValue;
+						return !(Boolean) rightValue;
+					else if (rightValue instanceof Byte) {
+						return -(Byte) rightValue;
+					} else if (rightValue instanceof Short) {
+						return -(Short) rightValue;
 					} else if (rightValue instanceof Integer) {
-						return -(Integer)rightValue;
+						return -(Integer) rightValue;
+					} else if (rightValue instanceof Long) {
+						return -(Long) rightValue;
+					} else if (rightValue instanceof Float) {
+						return -(Float) rightValue;
+					} else if (rightValue instanceof Double) {
+						return -(Double) rightValue;
 					}
 					break;
 
@@ -81,7 +94,7 @@ public class UnaryExpression extends Expression {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

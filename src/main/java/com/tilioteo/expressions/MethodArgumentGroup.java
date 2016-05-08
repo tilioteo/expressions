@@ -9,7 +9,7 @@ package com.tilioteo.expressions;
  */
 @SuppressWarnings("serial")
 public class MethodArgumentGroup extends OperatorNodeGroup {
-	
+
 	private OperatorNode operatorNode;
 
 	public MethodArgumentGroup(int beginPosition, int endPosition, int level, OperatorNodeGroup parent) {
@@ -24,18 +24,18 @@ public class MethodArgumentGroup extends OperatorNodeGroup {
 	public void setOperatorNode(OperatorNode operatorNode) {
 		this.operatorNode = operatorNode;
 	}
-	
+
 	public Primitive[] getArgumentPrimitives() {
 		Primitive[] arguments = new Primitive[this.size()];
 
 		for (int i = 0; i < this.size(); ++i) {
 			HasOperatorNode element = this.get(i);
 			if (element instanceof MethodArgument) {
-				Primitive argument = ExpressionFactory.parseString(((MethodArgument)element).getText());
+				Primitive argument = ExpressionFactory.parseString(((MethodArgument) element).getText());
 				arguments[i] = argument;
 			}
 		}
-		
+
 		return arguments;
 	}
 
