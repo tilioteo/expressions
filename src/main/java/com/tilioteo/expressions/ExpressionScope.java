@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.tilioteo.expressions;
 
 import java.lang.annotation.ElementType;
@@ -10,14 +7,13 @@ import java.lang.annotation.Target;
 
 /**
  * @author kamil
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Target({ElementType.METHOD, ElementType.FIELD})
 public @interface ExpressionScope {
-	public enum Scope {
-		PUBLIC, PRIVATE
-	}
+    Scope value();
 
-	Scope value();
+    enum Scope {
+        PUBLIC, PRIVATE
+    }
 }

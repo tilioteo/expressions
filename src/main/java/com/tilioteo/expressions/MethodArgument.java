@@ -1,28 +1,23 @@
-/**
- * 
- */
 package com.tilioteo.expressions;
 
 /**
  * @author Kamil Morong - Hypothesis
- *
  */
-@SuppressWarnings("serial")
 public class MethodArgument implements HasOperatorNode {
 
-	private String text;
+    private final String text;
 
-	public MethodArgument(String text) {
-		this.text = text;
-	}
+    public MethodArgument(String text) {
+        this.text = text;
+    }
 
-	// not used
-	public OperatorNode getOperatorNode() {
-		return null;
-	}
+    // not used
+    public OperatorNode getOperatorNode() {
+        return null;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
 }
