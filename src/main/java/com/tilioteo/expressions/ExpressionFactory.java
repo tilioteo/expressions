@@ -1,6 +1,7 @@
 package com.tilioteo.expressions;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class ExpressionFactory implements Serializable {
                     CHR_6, CHR_7, CHR_8, CHR_9)
             .collect(toSet())
     );
-    private static final Logger log = Logger.getLogger(ExpressionFactory.class);
+    private static final Logger log = LogManager.getLogger(ExpressionFactory.class);
 
     public static Expression parseString(final String text) {
         Expression expression = null;

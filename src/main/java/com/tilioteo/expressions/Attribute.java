@@ -1,14 +1,15 @@
 package com.tilioteo.expressions;
 
 import com.tilioteo.expressions.ExpressionScope.Scope;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Kamil Morong - Hypothesis
  */
 public class Attribute extends Variable implements HasReference {
 
-    private static final Logger log = Logger.getLogger(Attribute.class);
+    private static final Logger log = LogManager.getLogger(Attribute.class);
 
     private Primitive reference;
 

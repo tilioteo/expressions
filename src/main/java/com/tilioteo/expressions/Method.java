@@ -1,7 +1,8 @@
 package com.tilioteo.expressions;
 
 import com.tilioteo.expressions.ExpressionScope.Scope;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Arrays;
  */
 public class Method extends Primitive implements HasReference {
 
-    private static final Logger log = Logger.getLogger(Method.class);
+    private static final Logger log = LogManager.getLogger(Method.class);
     private final String name;
     private final Primitive[] arguments;
     private Primitive reference;
