@@ -108,11 +108,35 @@ public class Method extends Primitive implements HasReference {
                 method = clazz.getDeclaredMethod(name, parameterTypes);
                 return method;
             } catch (Exception e) {
+                final Class<?>[] interfaces = clazz.getInterfaces();
+                for (Class<?> itfc : interfaces) {
+                    method = getInterfaceMethodDeeply(itfc, name, parameterTypes);
+                    if (method != null) {
+                        return method;
+                    }
+                }
             }
 
             clazz = clazz.getSuperclass();
 
         } while (clazz != null);
+        return null;
+    }
+
+    private java.lang.reflect.Method getInterfaceMethodDeeply(Class<?> clazz, String name, Class<?>... parameterTypes) {
+        java.lang.reflect.Method method;
+        try {
+            method = clazz.getDeclaredMethod(name, parameterTypes);
+            return method;
+        } catch (NoSuchMethodException e) {
+        }
+        final Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> itfc : interfaces) {
+            method = getInterfaceMethodDeeply(itfc, name, parameterTypes);
+            if (method != null) {
+                return method;
+            }
+        }
         return null;
     }
 
